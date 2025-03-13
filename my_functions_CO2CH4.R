@@ -1,4 +1,3 @@
-environment(click.peak_custom_CO2CH4) <- asNamespace("goFlux")
 ##Is the same function that click.peak2 but I added an argument (shoulder_used) in which you enter the shoulder that you used
 #with goFlux() function and in the plots you will the limit of your incubaition and where start the shoulder
 #Additionally, this one show both gases (CO2 and CH4) which could help you to decide the best strat and end time for your incubation
@@ -303,4 +302,4 @@ click.peak_custom_CO2CH4 <- function (ow.list, gastype = "CO2dry_ppm", sleep = 3
   ow.corr <- map_df(ow.corr.ls, ~as.data.frame(.x))
   return(ow.corr)
 }
-environment(click.peak_Jorge) <- environment(goFlux::click.peak2)
+environment(click.peak_custom_CO2CH4) <- environment(goFlux::click.peak2)
