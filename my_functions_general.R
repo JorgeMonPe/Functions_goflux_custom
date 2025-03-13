@@ -235,4 +235,4 @@ click.peak_limits <- function (ow.list, gastype = "CO2dry_ppm", sleep = 3, plot.
   ow.corr <- map_df(ow.corr.ls, ~as.data.frame(.x))
   return(ow.corr)
 }
-environment(click.peak_Jorge) <- environment(goFlux::click.peak2)
+environment(click.peak_limits) <- environment(goFlux::click.peak2)
