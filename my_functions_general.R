@@ -2,7 +2,7 @@
 ##Is the same function that click.peak2 but I added an argument (shoulder_used) in which you enter the shoulder that you used
 #with goFlux() function and in the plots you will the limit of your incubation and where start the shoulder
 click.peak_limits <- function (ow.list, gastype = "CO2dry_ppm", sleep = 3, plot.lim = c(380, 
-  1000), seq = NULL, warn.length = 60, save.plots = NULL, shoulder_used = 0) 
+  1000), seq = NULL, warn.length = 60, save.plots = NULL) 
 {
   if (!is.numeric(plot.lim) | length(plot.lim) != 2) {
     stop("'plot.lim' must be numeric and of length 2")
@@ -92,6 +92,8 @@ click.peak_limits <- function (ow.list, gastype = "CO2dry_ppm", sleep = 3, plot.
   ow.corr.ls <- list()
   plots.ls <- list()
   for (ow in seq) {
+    start.time <- unique(Reduce("c", ow.list[[ow]][, "start.time"]))
+    obs.length <- unique(Reduce("c", ow.list[[ow]][, "obs.length"]))
     flux.meas <- Reduce("c", ow.list[[ow]][, gastype])
     time.meas <- Reduce("c", ow.list[[ow]][, "POSIX.time"])
     ymax <- max(flux.meas, na.rm = TRUE)
@@ -108,7 +110,7 @@ click.peak_limits <- function (ow.list, gastype = "CO2dry_ppm", sleep = 3, plot.
       plot(flux.meas ~ time.meas, main = paste(unique(ow.list[[ow]]$UniqueID)), 
         xlab = "Time", ylab = gastype, xaxt = "n", ylim = c(ylim.min, 
           ylim.max))
-      abline(v = c(min(time.meas)+shoulder_used, max(time.meas)-shoulder_used), col = "red", lty = "dashed")
+      abline(v = c(start.time, start.time+obs.length), col = "red", lty = "dashed")
       time.zone <- attr(time.meas, "tzone")
       Sys.setenv(TZ = time.zone)
       axis.POSIXct(1, at = seq(min(time.meas), max(time.meas), 

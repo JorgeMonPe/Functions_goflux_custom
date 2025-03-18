@@ -2,7 +2,7 @@
 #with goFlux() function and in the plots you will the limit of your incubaition and where start the shoulder
 #Additionally, this one show both gases (CO2 and CH4) which could help you to decide the best strat and end time for your incubation
 click.peak_custom_CO2CH4 <- function (ow.list, gastype = "CO2dry_ppm", sleep = 3, plot.lim = c(380, 
-  1000), seq = NULL, warn.length = 60, save.plots = NULL, shoulder_used = 0) 
+  1000), seq = NULL, warn.length = 60, save.plots = NULL) 
 {
   if (!is.numeric(plot.lim) | length(plot.lim) != 2) {
     stop("'plot.lim' must be numeric and of length 2")
@@ -92,6 +92,8 @@ click.peak_custom_CO2CH4 <- function (ow.list, gastype = "CO2dry_ppm", sleep = 3
   ow.corr.ls <- list()
   plots.ls <- list()
   for (ow in seq) {
+    start.time <- unique(Reduce("c", ow.list[[ow]][, "start.time"]))
+    obs.length <- unique(Reduce("c", ow.list[[ow]][, "obs.length"]))
     flux.meas <- Reduce("c", ow.list[[ow]][, gastype])
     time.meas <- Reduce("c", ow.list[[ow]][, "POSIX.time"])
     ymax <- max(flux.meas, na.rm = TRUE)
@@ -132,7 +134,7 @@ click.peak_custom_CO2CH4 <- function (ow.list, gastype = "CO2dry_ppm", sleep = 3
       plot(flux.meas ~ time.meas, main = paste("Incubation:",unique(ow.list[[ow]]$UniqueID)), 
         xlab = "Time", ylab = gastype, xaxt = "n", ylim = c(ylim.min, 
           ylim.max))
-      abline(v = c(min(time.meas)+shoulder_used, max(time.meas)-shoulder_used), col = "red", lty = "dashed")
+      abline(v = c(start.time, start.time+obs.length), col = "red", lty = "dashed")
       time.zone <- attr(time.meas, "tzone")
       Sys.setenv(TZ = time.zone)
       axis.POSIXct(1, at = seq(min(time.meas), max(time.meas), 
@@ -174,7 +176,7 @@ click.peak_custom_CO2CH4 <- function (ow.list, gastype = "CO2dry_ppm", sleep = 3
         plot(flux.meas ~ time.meas, main = paste("Incubation:",unique(ow.list[[ow]]$UniqueID)), 
              xlab = "Time", ylab = gastype, xaxt = "n", ylim = c(ylim.min, 
                                                                  ylim.max))
-        abline(v = c(min(time.meas)+shoulder_used, max(time.meas)-shoulder_used), col = "red", lty = "dashed")
+        abline(v = c(start.time, start.time+obs.length), col = "red", lty = "dashed")
         time.zone <- attr(time.meas, "tzone")
         Sys.setenv(TZ = time.zone)
         axis.POSIXct(1, at = seq(min(time.meas), max(time.meas), 
